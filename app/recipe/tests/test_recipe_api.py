@@ -54,7 +54,10 @@ class PrivateRecipeApiTests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = create_user(email="user@example.com", password="testpass123")
+        self.user = create_user(
+            email="user@example.com",
+            password="testpass123",
+        )
         self.client.force_authenticate(self.user)
 
     def test_retrieve_recipes(self):
@@ -71,7 +74,10 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_recipe_list_limited_to_user(self):
         """Test list of recipes is limited to authenticated user"""
-        other_user = create_user(email="user2@example.com", password="testpass123")
+        other_user = create_user(
+            email="user2@example.com",
+            password="testpass123",
+        )
         create_recipe(user=other_user)
         create_recipe(user=self.user)
         res = self.client.get(RECIPE_URL)
@@ -372,10 +378,9 @@ class PrivateRecipeApiTests(TestCase):
         ingredient = Ingredient.objects.create(user=self.user, name="Garlic")
         recipe = create_recipe(user=self.user)
         recipe.ingredients.add(ingredient)
-
         payload = {"ingredients": []}
         url = detail_url(recipe.id)
         res = self.client.patch(url, payload, format="json")
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(recipe.ingredients.count(),0)
+        self.assertEqual(recipe.ingredients.count(), 0)
